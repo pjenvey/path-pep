@@ -37,24 +37,17 @@ path. This can lead to issues where any e.g. string duck-types to a
 file system path whether it actually represents a path or not.
 
 To help elevate the representation of file system paths from their
-encoding as strings and bytes to a more appropriate object
+representation as strings and bytes to a more appropriate object
 representation, the pathlib module [#pathlib]_ was provisionally
 introduced in Python 3.4 through PEP 428. While considered by some as
 an improvement over strings and bytes for file system paths, it has
-suffered from a lack of adoption. Typically the two key issues listed
+suffered from a lack of adoption. Typically the key issue listed
 for the low adoption rate has been the lack of support in the standard
-library and the difficulty of safely extracting the string
-representation of the path from a ``pathlib.PurePath``
-object in a safe manner for use in APIs that don't support pathlib
-objects natively (as the pathlib module does not support ``bytes``
-paths, support for that type has never been a concern).
+library. This lack of support required users of pathlib to manually
+convert path objects to strings by calling ``str(path)`` which many
+found error-prone.
 
-The lack of support in the standard library has stemmed from the fact
-that the pathlib module was provisional. The acceptance of this PEP
-will lead to the removal of the module's provisional status, allowing
-the standard library to support pathlib object widely.
-
-The lack of safety in converting pathlib objects to strings comes from
+One issue in converting path objects to strings comes from
 the fact that only generic way to get a string representation of the
 path was to pass the object to ``str()``. This can pose a
 problem when done blindly as nearly all Python objects have some
@@ -63,11 +56,21 @@ string representation whether they are a path or not, e.g.
 ``builtins.open()`` [#builtins-open]_ will happily use to create a new
 file.
 
-This PEP then proposes to introduce a new protocol for objects to
-follow which represent file system paths. Providing a protocol allows
+Exacerbating this whole situation is the
+``DirEntry`` object [#os-direntry]_. While path objects have a
+representation that can be extracted using ``str()``, ``DirEntry``
+objects expose a ``path`` attribute instead. Having no common
+interface between path objects, ``DirEntry``, and any other
+third-party path library had become an issue. A solution that allowed
+any path-representing object to declare that is was a path and a way
+to extract a low-level representation that all path objects could
+support was desired.
+
+This PEP then proposes to introduce a new protocol to be followed by
+objects which represent file system paths. Providing a protocol allows
 for clear signalling of what objects represent file system paths as
-well as a way to extract a lower-level encoding that can be used with
-older APIs which only support strings or bytes.
+well as a way to extract a lower-level representation that can be used
+with older APIs which only support strings or bytes.
 
 Discussions regarding path objects that led to this PEP can be found
 in multiple threads on the python-ideas mailing list archive
@@ -196,8 +199,8 @@ a string or promote a ``bytes`` object to a ``str``. The
 object directly to ``bytes`` and not allow demoting strings.
 
 The ``DirEntry`` object [#os-direntry]_ will gain an ``__fspath__()``
-method. It will return the value currently found on the ``path``
-attribute of ``DirEntry`` instances.
+method. It will return the same value as currently found on the
+``path`` attribute of ``DirEntry`` instances.
 
 
 os.path
@@ -287,6 +290,10 @@ object incidentally already defines a ``__fspath__()`` method there is
 not reason to expect pre-existing code to break or expect to have
 their semantics implicitly changed.
 
+Libraries wishing to support path objects and a version of Python
+prior to Python 3.6 can use the idiom of
+``path.__fspath__() if hasattr(path, '__fspath__') else path``.
+
 
 Open Issues
 ===========
@@ -295,11 +302,10 @@ The name and location of the protocol's ABC
 -------------------------------------------
 
 The name of the ABC being proposed to represent the protocol has not
-been discussed very much. Another viable name is ``pathlib.PathABC``.
-The name can't be ``pathlib.Path`` as that already exists.
-
-It's also an open issue as to whether the ABC belongs in the pathlib,
-os, or os.path module.
+been discussed very much, not which module it should exist in.
+Names other than ``PathLike`` which are viable are ``PathABC``
+and ``FSPathABC``. The name can't be ``Path`` if the ABC is put into
+the pathlib module.
 
 
 Type hint for path-like objects
@@ -307,10 +313,14 @@ Type hint for path-like objects
 
 Creating a proper type hint for  APIs that accept path objects as well
 as strings and bytes will probably be needed. It could be as simple
-as defining ``typing.Path`` and then having
-``typing.PathLike = typing.Union[typing.Path, str, bytes]``, but it
-should be properly discussed with the right type hinting experts if
-this is the best approach.
+as defining ``typing.Path``/``typing.FSPath`` to correspond to the ABC
+and then having
+``typing.PathLike = typing.Union[typing.Path, str, bytes]``. The type
+hint could also potentially be made to be generic to accept the
+specific low-level representation, e.g. ``typing.PathLike[str]``.
+
+In the end the type hinting solution should be properly discussed
+with the right type hinting experts if this is the best approach.
 
 
 Rejected Ideas

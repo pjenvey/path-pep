@@ -138,7 +138,9 @@ well as continue to accept ``str`` and ``bytes``.
 os
 '''
 
-The ``fspath()`` function will be added with the following semantics::
+The ``fspath()`` function will be added with the following semantics
+(although this is still an open issue:
+`Should os.fspath() return bytes?`_)::
 
     import typing as t
 
@@ -297,6 +299,24 @@ prior to Python 3.6 can use the idiom of
 
 Open Issues
 ===========
+
+Should os.fspath() return bytes?
+--------------------------------
+
+Some have argued that ``os.fspath()`` should be configurable so that
+the user can specify what types are acceptable (e.g. an argument to
+say that bytes are acceptable instead of strings, or both types).
+Others have suggested that ``os.fspath()`` match the proposed
+semantics of ``PyOS_RawFSPath()``. Both camps argue that use of
+``os.fspath()`` will only be for a transitionary period while more
+libraries gain acceptance of path objects, and so being more flexible
+in what ``os.fspath()`` works with will help with the transition. The
+opponents to this -- which support the currently proposed sematnics --
+worry that being so flexible with accepting bytes will lead to people
+not properly considering the ramifications of working with bytes,
+especially if bytes are transparently appearing in their code due to
+``os.fspath()``.
+
 
 The name and location of the protocol's ABC
 -------------------------------------------

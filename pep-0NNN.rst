@@ -239,8 +239,8 @@ pathlib
 The ``PathLike`` ABC as discussed in the Protocol_ section will be
 added to the pathlib module [#pathlib]_. The constructor for
 ``pathlib.PurePath`` and ``pathlib.Path`` will be updated to accept
-path objects. Both ``PurePath`` and ``Path`` will continue to not
-accept ``bytes`` path representations, and so if ``__fspath__()``
+PathLike objects. Both ``PurePath`` and ``Path`` will continue
+to not accept ``bytes`` path representations, and so if ``__fspath__()``
 returns ``bytes`` it will raise an exception.
 
 The ``path`` attribute will be removed as this PEP makes its

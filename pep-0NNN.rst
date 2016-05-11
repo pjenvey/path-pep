@@ -48,8 +48,8 @@ convert path objects to strings by calling ``str(path)`` which many
 found error-prone.
 
 One issue in converting path objects to strings comes from
-the fact that only generic way to get a string representation of the
-path was to pass the object to ``str()``. This can pose a
+the fact that the only generic way to get a string representation of
+the path was to pass the object to ``str()``. This can pose a
 problem when done blindly as nearly all Python objects have some
 string representation whether they are a path or not, e.g.
 ``str(None)`` will give a result that
@@ -243,7 +243,7 @@ path objects. Both ``PurePath`` and ``Path`` will continue to not
 accept ``bytes`` path representations, and so if ``__fspath__()``
 returns ``bytes`` it will raise an exception.
 
-The ``path`` attribute will be removed as this PEP makes its
+The ``path`` attribute will be removed as this PEP makes it
 redundant (it has not been included in any released version of Python
 and so is not a backwards-compatibility concern).
 
@@ -290,7 +290,7 @@ Backwards compatibility
 There are no explicit backwards-compatibility concerns. Unless an
 object incidentally already defines a ``__fspath__()`` method there is
 no reason to expect pre-existing code to break or expect to have
-their semantics implicitly changed.
+its semantics implicitly changed.
 
 Libraries wishing to support path objects and a version of Python
 prior to Python 3.6 can use the idiom of
@@ -331,7 +331,7 @@ the pathlib module.
 Type hint for path-like objects
 -------------------------------
 
-Creating a proper type hint for  APIs that accept path objects as well
+Creating a proper type hint for APIs that accept path objects as well
 as strings and bytes will probably be needed. It could be as simple
 as defining ``typing.Path``/``typing.FSPath`` to correspond to the ABC
 and then having

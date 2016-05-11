@@ -62,7 +62,7 @@ representation that can be extracted using ``str()``, ``DirEntry``
 objects expose a ``path`` attribute instead. Having no common
 interface between path objects, ``DirEntry``, and any other
 third-party path library had become an issue. A solution that allowed
-any path-representing object to declare that is was a path and a way
+any path-representing object to declare that it was a path and a way
 to extract a low-level representation that all path objects could
 support was desired.
 
@@ -289,7 +289,7 @@ Backwards compatibility
 
 There are no explicit backwards-compatibility concerns. Unless an
 object incidentally already defines a ``__fspath__()`` method there is
-not reason to expect pre-existing code to break or expect to have
+no reason to expect pre-existing code to break or expect to have
 their semantics implicitly changed.
 
 Libraries wishing to support path objects and a version of Python
@@ -311,7 +311,7 @@ semantics of ``PyOS_RawFSPath()``. Both camps argue that use of
 ``os.fspath()`` will only be for a transitionary period while more
 libraries gain acceptance of path objects, and so being more flexible
 in what ``os.fspath()`` works with will help with the transition. The
-opponents to this -- which support the currently proposed sematnics --
+opponents to this -- which support the currently proposed semantics --
 worry that being so flexible with accepting bytes will lead to people
 not properly considering the ramifications of working with bytes,
 especially if bytes are transparently appearing in their code due to
@@ -322,7 +322,7 @@ The name and location of the protocol's ABC
 -------------------------------------------
 
 The name of the ABC being proposed to represent the protocol has not
-been discussed very much, not which module it should exist in.
+been discussed very much, nor which module it should exist in.
 Names other than ``PathLike`` which are viable are ``PathABC``
 and ``FSPathABC``. The name can't be ``Path`` if the ABC is put into
 the pathlib module.
@@ -352,7 +352,7 @@ Other names for the protocol's function
 Various names were proposed during discussions leading to this PEP,
 including ``__path__``, ``__pathname__``, and ``__fspathname__``. In
 the end people seemed to gravitate towards ``__fspath__`` for being
-unambiguous without unnecessarily long.
+unambiguous without being unnecessarily long.
 
 
 Separate str/bytes methods
@@ -360,11 +360,11 @@ Separate str/bytes methods
 
 At one point it was suggested that ``__fspath__()`` only return
 strings and another method named ``__fspathb__()`` be introduced to
-return bytes. The thinking that by making ``__fspath__()`` not be
+return bytes. The thinking is that by making ``__fspath__()`` not be
 polymorphic it could make dealing with the potential string or bytes
 representations easier. But the general consensus was that returning
 bytes will more than likely be rare and that the various functions in
-the os module are the better abstraction to be promoting over direct
+the os module are the better abstraction to promote over direct
 calls to ``__fspath__()``.
 
 

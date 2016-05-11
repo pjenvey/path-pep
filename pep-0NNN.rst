@@ -6,8 +6,8 @@ Author: Brett Cannon <brett@python.org>
 Status: Draft
 Type: Standards Track
 Content-Type: text/x-rst
-Created: DD-Mmm-2016
-Post-History: DD-Mmm-2016
+Created: 11-May-2016
+Post-History: 11-May-2016
 
 
 Abstract

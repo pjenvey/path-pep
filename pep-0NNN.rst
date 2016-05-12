@@ -86,7 +86,7 @@ This proposal is split into two parts. One part is the proposal of a
 protocol for objects to declare and provide support for exposing a
 file system path representation. The other part deals with changes to
 Python'sstandard library to support the new protocol. These changes will
-alsohave the pathlib module drop its provisional status.
+also have the pathlib module drop its provisional status.
 
 Protocol
 --------
@@ -294,6 +294,23 @@ its semantics implicitly changed.
 Libraries wishing to support path objects and a version of Python
 prior to Python 3.6 can use the idiom of
 ``path.__fspath__() if hasattr(path, '__fspath__') else path``.
+
+
+Implementation
+==============
+
+This is the task list for what this PEP proposes:
+
+0. Remove ``path`` attribute from pathlib
+0. Remove provisional status of pathlib
+0. Add ABC
+0. Add ``os.fspath()``
+0. Add ``PyOS_RawFSPath()``
+0. Update ``os.fsencode()``
+0. Update ``os.fsdecode()``
+0. Update ``builtins.open()``
+0. Update ``os.DirEntry``
+0. Update ``os.path``
 
 
 Open Issues

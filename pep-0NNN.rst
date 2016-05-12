@@ -68,7 +68,7 @@ support was desired.
 
 This PEP then proposes to introduce a new protocol to be followed by
 objects which represent file system paths. Providing a protocol allows
-for clear signalling of what objects represent file system paths as
+for explicit signaling of what objects represent file system paths as
 well as a way to extract a lower-level representation that can be used
 with older APIs which only support strings or bytes.
 
@@ -84,10 +84,9 @@ Proposal
 
 This proposal is split into two parts. One part is the proposal of a
 protocol for objects to declare and provide support for exposing a
-file system path representation. The other part is changes to Python's
-standard library to support the new protocol. These changes will also
-have the pathlib module drop its provisional status.
-
+file system path representation. The other part deals with changes to
+Python'sstandard library to support the new protocol. These changes will
+alsohave the pathlib module drop its provisional status.
 
 Protocol
 --------
@@ -148,7 +147,7 @@ The ``fspath()`` function will be added with the following semantics
     def fspath(path: t.Union[PathLike, str]) -> str:
         """Return the string representation of the path.
 
-        If a string is passed in then it is returned unchanged.
+        If a string is passed in then, it is returned unchanged.
         """
         if hasattr(path, '__fspath__'):
             path = path.__fspath__()
@@ -240,7 +239,7 @@ The ``PathLike`` ABC as discussed in the Protocol_ section will be
 added to the pathlib module [#pathlib]_. The constructor for
 ``pathlib.PurePath`` and ``pathlib.Path`` will be updated to accept
 PathLike objects. Both ``PurePath`` and ``Path`` will continue
-to not accept ``bytes`` path representations, and so if ``__fspath__()``
+not to accept ``bytes`` path representations, and so if ``__fspath__()``
 returns ``bytes`` it will raise an exception.
 
 The ``path`` attribute will be removed as this PEP makes it
@@ -289,7 +288,7 @@ Backwards compatibility
 
 There are no explicit backwards-compatibility concerns. Unless an
 object incidentally already defines a ``__fspath__()`` method there is
-no reason to expect pre-existing code to break or expect to have
+no reason to expect the pre-existing code to break or expect to have
 its semantics implicitly changed.
 
 Libraries wishing to support path objects and a version of Python
@@ -339,7 +338,7 @@ and then having
 hint could also potentially be made to be generic to accept the
 specific low-level representation, e.g. ``typing.PathLike[str]``.
 
-In the end the type hinting solution should be properly discussed
+In the end, the type hinting solution should be properly discussed
 with the right type hinting experts if this is the best approach.
 
 
@@ -388,11 +387,11 @@ Much of the discussion that led to this PEP revolved around whether
 was that ``bytes`` are difficult to work with due to their
 inherent lack of information about their encoding, and PEP 383 makes
 it possible to represent all file system paths using ``str`` with the
-``surrogateescape`` handler. Thus it would be better to forcibly
+``surrogateescape`` handler. Thus, it would be better to forcibly
 promote the use of ``str`` as the low-level path representation for
 high-level path objects.
 
-In the end it was decided that using ``bytes`` to represent paths is
+In the end, it was decided that using ``bytes`` to represent paths is
 simply not going to go away and thus they should be supported to some
 degree. For those not wanting the hassle of working with ``bytes``,
 ``os.fspath()`` is provided.
@@ -401,10 +400,10 @@ degree. For those not wanting the hassle of working with ``bytes``,
 A generic string encoding mechanism
 -----------------------------------
 
-At one point there was discussion of developing a generic mechanism to
+At one point there was a discussion of developing a generic mechanism to
 extract a string representation of an object that had semantic meaning
 (``__str__()`` does not necessarily return anything of semantic
-significance beyond what may be helpful for debugging). In the end it
+significance beyond what may be helpful for debugging). In the end, it
 was deemed to lack a motivating need beyond the one this PEP is
 trying to solve in a specific fashion.
 

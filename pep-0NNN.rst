@@ -173,7 +173,7 @@ get the path representation one prefers. For a path object,
 of ``bytes`` should be assumed to be the default file system encoding, 
 then ``os.fsdecode()`` should be used. Finally, if a ``bytes`` 
 representation is desired and any strings should be encoded using the 
-default file system encoding then ``os.fsencode()`` is used.
+default file system encoding, then ``os.fsencode()`` is used.
 
 This PEP recommends using path objects when possible and falling back
 to string paths as necessary. Therefore, no function is provided for
@@ -191,7 +191,7 @@ same level of the hierarchy, but they vary in whether they promote or
 demote objects to another level. The ``pathlib.PurePath`` class can
 promote a ``str`` to a path object. The ``os.fspath()`` function can
 demote a path object to a ``str`` or ``bytes`` instance, depending
-on what ``__fspath__()`` returns
+on what ``__fspath__()`` returns.
 The ``os.fsdecode()`` function will demote a path object to
 a string or promote a ``bytes`` object to a ``str``. The
 ``os.fsencode()`` function will demote a path or string object to

@@ -231,6 +231,17 @@ objects, it is better to make the transition as easy as possible than
 to worry about unexpected/undocumented duck typing support for
 projects.
 
+There has also been the suggestion that ``os.path`` functions could be
+used in a tight loop and the overhead of checking or calling
+``__fspath__()`` would be too costly. In this scenario only
+path-consuming APIs would be directly updated and path-manipulating
+APIs like the ones in ``os.path`` would go unmodified. This would
+require library authors to update their code to support path objects
+if they performed any path manipulations, but if the library code
+passed the path straight through then the library wouldn't need to be
+updated. It is the view of this PEP and Guido, though, that this is an
+unnecessary worry and that performance will still be acceptable.
+
 
 pathlib
 '''''''

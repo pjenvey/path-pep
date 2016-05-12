@@ -183,7 +183,7 @@ using path objects when possible and falling back to string paths as
 necessary and using ``bytes`` as a last resort.
 
 Another way to view this is as a hierarchy of file system path
-representations (highest- to lowest-level): path -> str -> bytes. The
+representations (highest- to lowest-level): path → str → bytes. The
 functions and classes under discussion can all accept objects on the
 same level of the hierarchy, but they vary in whether they promote or
 demote objects to another level. The ``pathlib.PurePath`` class can

@@ -137,24 +137,22 @@ well as continue to accept ``str`` and ``bytes``.
 os
 '''
 
-The ``fspath()`` function will be added with the following semantics
-(although this is still an open issue:
-`Should os.fspath() return bytes?`_)::
+The ``fspath()`` function will be added with the following semantics::
 
     import typing as t
 
 
-    def fspath(path: t.Union[PathLike, str]) -> str:
+    def fspath(path: t.Union[PathLike, str, bytes]) -> t.Union[str, bytes]:
         """Return the string representation of the path.
 
-        If a string is passed in then, it is returned unchanged.
+        If str or bytes is passed in, it is returned unchanged.
         """
-        if hasattr(path, '__fspath__'):
-            path = path.__fspath__()
-        if not isinstance(path, str):
+        if isinstance(path, (str, bytes)):
+            return path
+        if not hasattr(path, '__fspath__'):
             type_name = type(path).__name__
-            raise TypeError("expected a str or path object, not " + type_name)
-        return path
+            raise TypeError("expected a str/bytes or path object, not " + type_name)
+        return path.__fspath__()
 
 The ``os.fsencode()`` [#os-fsencode]_ and
 ``os.fsdecode()`` [#os-fsdecode]_ functions will be updated to accept
@@ -169,13 +167,13 @@ The addition of ``os.fspath()``, the updates to
 ``os.fsencode()``/``os.fsdecode()``, and the current semantics of
 ``pathlib.PurePath`` provide the semantics necessary to
 get the path representation one prefers. For a path object,
-``pathlib.PurePath``/``Path`` can be used. If ``str`` is desired and
-a ``bytes`` object is considered an error, then ``os.fspath()`` can be
-used. If a ``str`` is desired and the encoding of ``bytes`` should be
-assumed to be the default file system encoding, then ``os.fsdecode()``
-should be used. Finally, if a ``bytes`` representation is desired and
-any strings should be encoded using the default file system encoding
-then ``os.fsencode()`` is used.
+``pathlib.PurePath``/``Path`` can be used. To obtain the ``str`` or 
+``bytes`` representation (whichever is provided by the object), then 
+``os.fspath()`` can be used. If a ``str`` is desired and the encoding 
+of ``bytes`` should be assumed to be the default file system encoding, 
+then ``os.fsdecode()`` should be used. Finally, if a ``bytes`` 
+representation is desired and any strings should be encoded using the 
+default file system encoding then ``os.fsencode()`` is used.
 
 This PEP recommends using path objects when possible and falling back
 to string paths as necessary. Therefore, no function is provided for
@@ -192,8 +190,9 @@ functions and classes under discussion can all accept objects on the
 same level of the hierarchy, but they vary in whether they promote or
 demote objects to another level. The ``pathlib.PurePath`` class can
 promote a ``str`` to a path object. The ``os.fspath()`` function can
-demote a path object to a string, but only if ``__fspath__()`` returns
-a string. The ``os.fsdecode()`` function will demote a path object to
+demote a path object to a ``str`` or ``bytes`` instance, depending
+on what ``__fspath__()`` returns
+The ``os.fsdecode()`` function will demote a path object to
 a string or promote a ``bytes`` object to a ``str``. The
 ``os.fsencode()`` function will demote a path or string object to
 ``bytes``. There is no function that provides a way to demote a path

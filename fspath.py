@@ -12,14 +12,19 @@ class PathLike(abc.ABC):
         raise NotImplementedError
 
 
-def fspath(path: t.Union[PathLike, str]) -> str:
+def fspath(path: t.Union[PathLike, str, bytes]) -> t.Union[str, bytes]:
     """Return the string representation of the path.
 
-    If a string is passed in then it is returned unchanged.
+    If str or bytes is passed in, it is returned unchanged.
     """
-    if hasattr(path, '__fspath__'):
-        path = path.__fspath__()
-    if not isinstance(path, str):
-        type_name = type(path).__name__
-        raise TypeError("expected a str or path-like object, not " + type_name)
-    return path
+    if isinstance(path, (str, bytes)):
+        return path
+
+    try:
+        return path.__fspath__()
+    except AttributeError:
+        if hasattr(path, '__fspath__'):
+            raise
+
+        raise TypeError("expected str, bytes or path object, not "
+                        + type(path).__name__)

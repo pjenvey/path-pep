@@ -436,6 +436,18 @@ was deemed to lack a motivating need beyond the one this PEP is
 trying to solve in a specific fashion.
 
 
+Have __fspath__ be an attribute
+-------------------------------
+
+It was briefly considered to have ``__fspath__`` be an attribute
+instead of a method. This was rejected for two reasons. One,
+historically protocols have been implemented as "magic methods" and
+not "magic methods and attributes". Two, there is no guarantee that
+the lower-level representation of a path object will be pre-computed,
+potentially misleading users that there was no expensive computation
+behind the scenes in case the attribute was implemented as a property.
+
+
 Acknowledgements
 ================
 

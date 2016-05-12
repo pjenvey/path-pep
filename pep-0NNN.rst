@@ -326,24 +326,6 @@ This is the task list for what this PEP proposes:
 Open Issues
 ===========
 
-Should os.fspath() return bytes?
---------------------------------
-
-Some have argued that ``os.fspath()`` should be configurable so that
-the user can specify what types are acceptable (e.g. an argument to
-say that bytes are acceptable instead of strings, or both types).
-Others have suggested that ``os.fspath()`` match the proposed
-semantics of ``PyOS_RawFSPath()``. Both camps argue that use of
-``os.fspath()`` will only be for a transitionary period while more
-libraries gain acceptance of path objects, and so being more flexible
-in what ``os.fspath()`` works with will help with the transition. The
-opponents to this -- which support the currently proposed semantics --
-worry that being so flexible with accepting bytes will lead to people
-not properly considering the ramifications of working with bytes,
-especially if bytes are transparently appearing in their code due to
-``os.fspath()``.
-
-
 The name and location of the protocol's ABC
 -------------------------------------------
 

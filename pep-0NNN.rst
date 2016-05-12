@@ -302,17 +302,17 @@ Implementation
 
 This is the task list for what this PEP proposes:
 
-0. Remove the ``path`` attribute from pathlib
-0. Remove the provisional status of pathlib
-0. Add ``os.PathLike``
-0. Add ``os.fspath()``
-0. Add ``PyOS_FSPath()``
-0. Update ``os.fsencode()``
-0. Update ``os.fsdecode()``
-0. Update ``pathlib.PurePath`` and ``pathlib.Path``
-0. Update ``builtins.open()``
-0. Update ``os.DirEntry``
-0. Update ``os.path``
+#. Remove the ``path`` attribute from pathlib
+#. Remove the provisional status of pathlib
+#. Add ``os.PathLike``
+#. Add ``os.fspath()``
+#. Add ``PyOS_FSPath()``
+#. Update ``os.fsencode()``
+#. Update ``os.fsdecode()``
+#. Update ``pathlib.PurePath`` and ``pathlib.Path``
+#. Update ``builtins.open()``
+#. Update ``os.DirEntry``
+#. Update ``os.path``
 
 
 Rejected Ideas

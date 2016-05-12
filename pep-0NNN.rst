@@ -86,7 +86,7 @@ This proposal is split into two parts. One part is the proposal of a
 protocol for objects to declare and provide support for exposing a
 file system path representation. The other part deals with changes to
 Python'sstandard library to support the new protocol. These changes will
-alsohave the pathlib module drop its provisional status.
+also have the pathlib module drop its provisional status.
 
 Protocol
 --------

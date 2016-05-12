@@ -447,6 +447,12 @@ the lower-level representation of a path object will be pre-computed,
 potentially misleading users that there was no expensive computation
 behind the scenes in case the attribute was implemented as a property.
 
+This also indirectly ties into the idea of introducing a ``path``
+attribute to accomplish the same thing. This idea has an added issue,
+though, of accidentally having any object with a ``path`` attribute
+meet the protocol's duck typing. Introducing a new magic method for
+the protocol helpfully avoids any accidental opting into the protocol.
+
 
 Acknowledgements
 ================

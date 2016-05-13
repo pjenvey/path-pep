@@ -20,11 +20,14 @@ def fspath(path: t.Union[PathLike, str, bytes]) -> t.Union[str, bytes]:
     if isinstance(path, (str, bytes)):
         return path
 
+    # Work from the object's type to match method resolution of other magic
+    # methods.
+    path_type = type(path)
     try:
-        return path.__fspath__()
+        return path_type.__fspath__(path)
     except AttributeError:
-        if hasattr(path, '__fspath__'):
+        if hasattr(path_type, '__fspath__'):
             raise
 
-        raise TypeError("expected str, bytes or path object, not "
-                        + type(path).__name__)
+        raise TypeError("expected str, bytes or os.PathLike object, not "
+                        + path_type.__name__)

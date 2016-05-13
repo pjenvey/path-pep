@@ -13,11 +13,12 @@ PyOS_FSPath(PyObject *path)
         return path;
     }
 
-    if (PyObject_HasAttrString(path, "__fspath__")) {
-        return PyObject_CallMethodObjArgs(path, "__fspath__", NULL);
+    if (PyObject_HasAttrString(path->ob_type, "__fspath__")) {
+        return PyObject_CallMethodObjArgs(path->ob_type, "__fspath__", path,
+                                          NULL);
     }
 
     return PyErr_Format(PyExc_TypeError,
                         "expected a str, bytes, or path object, not %S",
-                            path->ob_type);
+                        path->ob_type);
 }

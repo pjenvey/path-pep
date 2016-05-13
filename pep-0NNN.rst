@@ -151,14 +151,17 @@ The ``fspath()`` function will be added with the following semantics::
         if isinstance(path, (str, bytes)):
             return path
 
+        # Work from the object's type to match method resolution of other magic
+        # methods.
+        path_type = type(path)
         try:
-            return path.__fspath__()
+            return path_type.__fspath__(path)
         except AttributeError:
-            if hasattr(path, '__fspath__'):
+            if hasattr(path_type, '__fspath__'):
                 raise
 
-            raise TypeError("expected str, bytes or path object, not "
-                            + type(path).__name__)
+            raise TypeError("expected str, bytes or os.PathLike object, not "
+                            + path_type.__name__)
 
 The ``os.fsencode()`` [#os-fsencode]_ and
 ``os.fsdecode()`` [#os-fsdecode]_ functions will be updated to accept
@@ -274,14 +277,16 @@ The C API will gain an equivalent function to ``os.fspath()``::
             return path;
         }
 
-        if (PyObject_HasAttrString(path, "__fspath__")) {
-            return PyObject_CallMethodObjArgs(path, "__fspath__", NULL);
+        if (PyObject_HasAttrString(path->ob_type, "__fspath__")) {
+            return PyObject_CallMethodObjArgs(path->ob_type, "__fspath__", path,
+                                            NULL);
         }
 
         return PyErr_Format(PyExc_TypeError,
-                            "expected a str, bytes, or path object, not %S",
-                                path->ob_type);
+                            "expected a str, bytes, or os.PathLike object, not %S",
+                            path->ob_type);
     }
+
 
 
 Backwards compatibility
@@ -314,6 +319,7 @@ This is the task list for what this PEP proposes:
 #. Update ``builtins.open()``
 #. Update ``os.DirEntry``
 #. Update ``os.path``
+#. Add a glossary entry for "path-like"
 
 
 Rejected Ideas
@@ -415,6 +421,31 @@ which represented the union of all acceptable path-representing types
 as that can be represented with
 ``typing.Union[str, bytes, os.PathLike]`` easily enough and the hope
 is users will slowly gravitate to path objects only.
+
+
+Provide ``os.fspathb()``
+------------------------
+
+It was suggested that to mirror the structure of e.g.
+``os.getcwd()``/``os.getcwdb()``, that ``os.fspath()`` only return
+``str`` and that another function named ``os.fspathb()`` be
+introduced that only returned ``bytes``. This was rejected as the
+purposes of the ``*b()`` functions are tied to querying the file
+system where there is a need to get the raw bytes back. As this PEP
+does not work directly with data on a file system (but which *may*
+be), the view was taken this distinction is unnecessary. It's also
+believed that the need for only bytes will not be common enough to
+need to support in such a specific manner as ``os.fsencode()`` will
+provide similar functionality.
+
+
+Call ``__fspath__()`` off of the instance
+-----------------------------------------
+
+An earlier draft of this PEP had ``os.fspath()`` calling
+``path.__fspath__()`` instead of ``type(path).__fspath__(path)``. The
+changed to be consistent with how other magic methods in Python are
+resolved.
 
 
 Acknowledgements

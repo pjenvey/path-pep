@@ -264,7 +264,7 @@ C API
 The C API will gain an equivalent function to ``os.fspath()``::
 
     /*
-        Return the file system path of the object.
+        Return the file system path representation of the object.
 
         If the object is str or bytes, then allow it to pass through with
         an incremented refcount. If the object defines __fspath__(), then
@@ -273,20 +273,28 @@ The C API will gain an equivalent function to ``os.fspath()``::
     PyObject *
     PyOS_FSPath(PyObject *path)
     {
+        _Py_IDENTIFIER(__fspath__);
+        PyObject *func = NULL;
+        PyObject *path_repr = NULL;
+
         if (PyUnicode_Check(path) || PyBytes_Check(path)) {
             Py_INCREF(path);
             return path;
         }
 
-        if (PyObject_HasAttrString(path->ob_type, "__fspath__")) {
-            return PyObject_CallMethodObjArgs(path->ob_type, "__fspath__", path,
-                                            NULL);
+        func = _PyObject_LookupSpecial(path, &PyId___fspath__);
+        if (NULL == func) {
+            return PyErr_Format(PyExc_TypeError,
+                                "expected a str, bytes, or os.PathLike object, "
+                                "not %S",
+                                path->ob_type);
         }
 
-        return PyErr_Format(PyExc_TypeError,
-                            "expected a str, bytes, or os.PathLike object, not %S",
-                            path->ob_type);
+        path_repr = PyObject_CallFunctionObjArgs(func, NULL);
+        Py_DECREF(func);
+        return path_repr;
     }
+
 
 
 

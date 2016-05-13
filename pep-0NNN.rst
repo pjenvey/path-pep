@@ -2,7 +2,8 @@ PEP: NNN
 Title: Adding a file system path protocol
 Version: $Revision$
 Last-Modified: $Date$
-Author: Brett Cannon <brett@python.org>
+Author: Brett Cannon <brett@python.org>,
+        Koos Zevenhoven <k7hoven@gmail.com>
 Status: Draft
 Type: Standards Track
 Content-Type: text/x-rst

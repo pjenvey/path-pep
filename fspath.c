@@ -20,7 +20,7 @@ PyOS_FSPath(PyObject *path)
     func = _PyObject_LookupSpecial(path, &PyId___fspath__);
     if (NULL == func) {
         return PyErr_Format(PyExc_TypeError,
-                            "expected a str, bytes, or os.PathLike object, "
+                            "expected str, bytes or os.PathLike object, "
                             "not %S",
                             path->ob_type);
     }
